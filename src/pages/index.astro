@@ -1,0 +1,73 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Breadopedia — Every bread on earth" description="The world's bread encyclopedia: history, science, technique and recipes for every bread on earth. Opening soon.">
+  <main>
+    <div class="band" aria-hidden="true"></div>
+    <section class="hero">
+      <p class="kicker">Opening soon</p>
+      <h1>Breadopedia</h1>
+      <p class="tagline">Every bread on earth.</p>
+      <p class="lede">
+        An encyclopedia of bread — where each loaf comes from, how it is made,
+        the science underneath it, and how to bake it at home.
+      </p>
+    </section>
+    <footer>
+      <span>breadopedia.org</span>
+    </footer>
+  </main>
+</Base>
+
+<style>
+  main {
+    min-height: 100dvh;
+    display: grid;
+    grid-template-rows: 12px 1fr auto;
+  }
+  .band {
+    background: linear-gradient(90deg, var(--crust) 0 25%, var(--wheat) 25% 50%, var(--leaf) 50% 75%, var(--sky) 75% 100%);
+  }
+  .hero {
+    padding: clamp(48px, 10vw, 120px) 16px;
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .kicker {
+    font-family: var(--font-head);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.8rem;
+    color: var(--crust);
+    margin: 0 0 16px;
+  }
+  h1 {
+    font-size: clamp(3rem, 11vw, 6.5rem);
+    line-height: 0.95;
+    margin: 0;
+    font-weight: 700;
+  }
+  .tagline {
+    font-family: var(--font-head);
+    font-size: clamp(1.25rem, 3.5vw, 2rem);
+    font-weight: 500;
+    color: var(--sky);
+    margin: 16px 0 24px;
+  }
+  .lede {
+    font-size: 1.125rem;
+    max-width: 52ch;
+    margin: 0 auto;
+    color: #3C3B4F;
+  }
+  footer {
+    padding: 24px 16px;
+    text-align: center;
+    font-family: var(--font-head);
+    font-size: 0.85rem;
+    color: #6B6A80;
+    border-top: 1px solid #ECEBF2;
+  }
+</style>
