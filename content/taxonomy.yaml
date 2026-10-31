@@ -1,2 +1,358 @@
-# taxonomy — see Phase 1 Schema doc. Empty until step 4.
-[]
+# Breadopedia taxonomy — the nested tree every entry sits in.
+# Level 1 = class (owns a colour) · Level 2 = leavening (or pizza, inside Flatbreads) · Level 3 = method or form · Level 4 = the bread itself.
+# Ids are dotted paths; an entry's `taxonomy` field points at its deepest node (level 3 here, or a level-4 node added later).
+# Draft 2026-10-31 from the knowledge base facets (283 breads)..
+
+# ---- 1 Flatbreads ---------------------------------------------------------
+- id: flatbreads
+  name: Flatbreads
+  level: 1
+  colour: "#d93a1f"
+  description: Breads baked, griddled or pit-cooked flat, from unleavened chapati to leavened khobz and pizza.
+- id: flatbreads.unleavened
+  name: Unleavened
+  parent: flatbreads
+  level: 2
+  description: No rise; the dough is rolled or slapped thin and cooked fast.
+- id: flatbreads.unleavened.griddle
+  name: Griddle
+  parent: flatbreads.unleavened
+  level: 3
+  description: Cooked on a hot plate, saj or comal — chapati, tortilla, sajj.
+- id: flatbreads.unleavened.oven-floor
+  name: Oven-floor
+  parent: flatbreads.unleavened
+  level: 3
+  description: Baked on a hearth or stone — roqaq, carta da musica.
+- id: flatbreads.unleavened.pit
+  name: Pit and ash
+  parent: flatbreads.unleavened
+  level: 3
+  description: Buried in embers or sand — Bedouin breads.
+- id: flatbreads.leavened
+  name: Leavened
+  parent: flatbreads
+  level: 2
+  description: Raised with yeast, levain or old dough before being baked flat.
+- id: flatbreads.leavened.oven-floor
+  name: Oven-floor
+  parent: flatbreads.leavened
+  level: 3
+  description: Baked on a hearth — khobz, pita, focaccia, barbari.
+- id: flatbreads.leavened.tandoor
+  name: Tandoor
+  parent: flatbreads.leavened
+  level: 3
+  description: Slapped onto the wall of a clay oven — naan, tannour.
+- id: flatbreads.leavened.griddle
+  name: Griddle
+  parent: flatbreads.leavened
+  level: 3
+  description: Leavened then griddled — aish shammi, bannock, injera.
+- id: flatbreads.leavened.pit
+  name: Pit
+  parent: flatbreads.leavened
+  level: 3
+  description: Leavened, then cooked in a heated pit or pot.
+- id: flatbreads.pizza
+  name: Pizza
+  parent: flatbreads
+  level: 2
+  description: The leavened, topped flatbread in all its styles, from Naples to Detroit.
+- id: flatbreads.pizza.neapolitan
+  name: Neapolitan and Italian
+  parent: flatbreads.pizza
+  level: 3
+  description: Wood-fired, high heat, soft rim — Napoletana, Romana, pinsa, sfincione.
+- id: flatbreads.pizza.american
+  name: American styles
+  parent: flatbreads.pizza
+  level: 3
+  description: New York, Chicago, Detroit, St. Louis, tavern, California and the rest.
+- id: flatbreads.pizza.filled
+  name: Folded and filled
+  parent: flatbreads.pizza
+  level: 3
+  description: Calzone, stromboli and other closed forms.
+
+# ---- 2 Hearth and pan loaves ----------------------------------------------
+- id: hearth
+  name: Hearth and pan loaves
+  level: 1
+  colour: "#e3a81a"
+  description: Free-standing and tinned loaves, from the baguette and the miche to the sandwich loaf and soda bread.
+- id: hearth.yeast
+  name: Yeast
+  parent: hearth
+  level: 2
+  description: Raised with baker's yeast.
+- id: hearth.yeast.oven-floor
+  name: Hearth-baked
+  parent: hearth.yeast
+  level: 3
+  description: Free-standing on the oven floor — baguette, ciabatta, cob, pugliese.
+- id: hearth.yeast.pan
+  name: Pan
+  parent: hearth.yeast
+  level: 3
+  description: Baked in a tin — pullman, shokupan, pain de mie, bloomer.
+- id: hearth.sourdough
+  name: Sourdough
+  parent: hearth
+  level: 2
+  description: Raised with a natural levain.
+- id: hearth.sourdough.oven-floor
+  name: Hearth-baked
+  parent: hearth.sourdough
+  level: 3
+  description: Pain au levain, miche, San Francisco sourdough, country loaf.
+- id: hearth.sourdough.pan
+  name: Pan
+  parent: hearth.sourdough
+  level: 3
+  description: Levain-raised loaves baked in a tin.
+- id: hearth.hybrid
+  name: Levain and yeast
+  parent: hearth
+  level: 2
+  description: A levain or pre-ferment with a little yeast — baguette de tradition, many French regional loaves.
+- id: hearth.hybrid.oven-floor
+  name: Hearth-baked
+  parent: hearth.hybrid
+  level: 3
+  description: Free-standing hybrid loaves.
+- id: hearth.chemical
+  name: Quick breads
+  parent: hearth
+  level: 2
+  description: Raised with soda or baking powder, no fermentation — soda bread, cornbread, wheaten loaf.
+- id: hearth.chemical.oven-floor
+  name: Hearth-baked
+  parent: hearth.chemical
+  level: 3
+  description: Free-standing quick loaves — soda bread, cob-shaped farls.
+- id: hearth.chemical.pan
+  name: Pan
+  parent: hearth.chemical
+  level: 3
+  description: Tinned quick breads — cornbread, beer bread, teabreads.
+- id: hearth.chemical.griddle
+  name: Griddle
+  parent: hearth.chemical
+  level: 3
+  description: Griddled quick breads — soda farl, bannock.
+
+# ---- 3 Enriched and sweet breads ------------------------------------------
+- id: enriched
+  name: Enriched and sweet breads
+  level: 1
+  colour: "#c43d77"
+  description: Doughs rich in butter, eggs, milk or sugar, from brioche and challah to panettone and croissant.
+- id: enriched.yeast
+  name: Yeast
+  parent: enriched
+  level: 2
+  description: Yeast-raised enriched doughs.
+- id: enriched.yeast.soft
+  name: Soft enriched
+  parent: enriched.yeast
+  level: 3
+  description: Brioche, challah, zopf, babka, shokupan-style milk breads.
+- id: enriched.yeast.fruited
+  name: Fruited and festive
+  parent: enriched.yeast
+  level: 3
+  description: Stollen, panettone, bara brith, tsoureki, saffron cake.
+- id: enriched.yeast.laminated
+  name: Laminated
+  parent: enriched.yeast
+  level: 3
+  description: Croissant, kouign-amann, Danish and other turned doughs.
+- id: enriched.sourdough
+  name: Sourdough
+  parent: enriched
+  level: 2
+  description: Levain-raised enriched breads — traditional panettone, pandoro.
+- id: enriched.sourdough.fruited
+  name: Fruited and festive
+  parent: enriched.sourdough
+  level: 3
+  description: Levain panettone and its relatives.
+- id: enriched.chemical
+  name: Quick
+  parent: enriched
+  level: 2
+  description: Soda- or powder-raised enriched breads — scones, Caribbean bun.
+- id: enriched.chemical.soft
+  name: Soft
+  parent: enriched.chemical
+  level: 3
+  description: Scones, bulla, teabreads with fat and sugar.
+
+# ---- 4 Rolls and buns -----------------------------------------------------
+- id: rolls
+  name: Rolls and buns
+  level: 1
+  colour: "#d9702a"
+  description: Small lean breads shaped to be eaten whole — rolls, rings, muffins and breadsticks.
+- id: rolls.yeast
+  name: Yeast
+  parent: rolls
+  level: 2
+  description: Yeast-raised rolls and buns.
+- id: rolls.yeast.oven-floor
+  name: Rolls
+  parent: rolls.yeast
+  level: 3
+  description: Semmel, kaiser, petits pains, burger buns, stottie.
+- id: rolls.yeast.ring
+  name: Rings
+  parent: rolls.yeast
+  level: 3
+  description: Bagel, pretzel, simit, couronne, taralli.
+- id: rolls.yeast.griddle
+  name: Griddled
+  parent: rolls.yeast
+  level: 3
+  description: English muffin, crumpet, pikelet.
+- id: rolls.hybrid
+  name: Levain and yeast
+  parent: rolls
+  level: 2
+  description: Rolls with a pre-ferment and a little yeast.
+- id: rolls.hybrid.ring
+  name: Rings
+  parent: rolls.hybrid
+  level: 3
+  description: Couronne bordelaise and lyonnaise.
+
+# ---- 5 Rye and dark breads ------------------------------------------------
+- id: rye
+  name: Rye and dark breads
+  level: 1
+  colour: "#6b3fa0"
+  description: Breads where rye or another dark grain leads, usually sour, from pumpernickel to borodinsky.
+- id: rye.sourdough
+  name: Sourdough
+  parent: rye
+  level: 2
+  description: Rye needs acid; nearly every true rye is levain-raised.
+- id: rye.sourdough.pan
+  name: Pan
+  parent: rye.sourdough
+  level: 3
+  description: Dense tinned ryes — vollkornbrot, rugbrød, borodinsky, pumpernickel.
+- id: rye.sourdough.oven-floor
+  name: Hearth-baked
+  parent: rye.sourdough
+  level: 3
+  description: Free-standing ryes — tourte de seigle, Russian black bread, roggenbrot.
+- id: rye.yeast
+  name: Yeast
+  parent: rye
+  level: 2
+  description: Lighter ryes raised with yeast — Jewish deli rye, limpa.
+- id: rye.yeast.oven-floor
+  name: Hearth-baked
+  parent: rye.yeast
+  level: 3
+  description: Free-standing yeast ryes.
+- id: rye.yeast.pan
+  name: Pan
+  parent: rye.yeast
+  level: 3
+  description: Tinned yeast ryes.
+
+# ---- 6 Steamed and fried breads -------------------------------------------
+- id: steamed
+  name: Steamed and fried breads
+  level: 1
+  colour: "#0b7a5c"
+  description: Breads cooked without an oven's dry heat — steamed buns, fried puffs, boiled dumplings.
+- id: steamed.yeast
+  name: Yeast
+  parent: steamed
+  level: 2
+  description: Yeast-raised, then steamed or fried.
+- id: steamed.yeast.steamed
+  name: Steamed
+  parent: steamed.yeast
+  level: 3
+  description: Mantou, bao, kubaneh, Boston brown bread.
+- id: steamed.yeast.fried
+  name: Fried
+  parent: steamed.yeast
+  level: 3
+  description: Bhatura, doughnut-type breads, pizza fritta, curry bread.
+- id: steamed.unleavened
+  name: Unleavened
+  parent: steamed
+  level: 2
+  description: No rise; puffed by steam in hot fat.
+- id: steamed.unleavened.fried
+  name: Fried
+  parent: steamed.unleavened
+  level: 3
+  description: Puri, scallion bread, pappadam.
+- id: steamed.chemical
+  name: Quick
+  parent: steamed
+  level: 2
+  description: Soda- or powder-raised, then fried or steamed.
+- id: steamed.chemical.fried
+  name: Fried
+  parent: steamed.chemical
+  level: 3
+  description: Sopaipilla, frybread, johnny cake.
+
+# ---- 7 Crispbreads and crackers -------------------------------------------
+- id: crisp
+  name: Crispbreads and crackers
+  level: 1
+  colour: "#1a8fcf"
+  description: Breads baked or dried to snap — knäckebröd, grissini, matzo, carta da musica.
+- id: crisp.unleavened
+  name: Unleavened
+  parent: crisp
+  level: 2
+  description: Rolled thin and baked dry.
+- id: crisp.unleavened.thin-baked
+  name: Thin-baked
+  parent: crisp.unleavened
+  level: 3
+  description: Matzo, carta da musica, oatcakes, pappadam when oven-dried.
+- id: crisp.yeast
+  name: Yeast
+  parent: crisp
+  level: 2
+  description: Yeast-raised then baked to dryness.
+- id: crisp.yeast.thin-baked
+  name: Thin-baked
+  parent: crisp.yeast
+  level: 3
+  description: Grissini, flatbrød, Dutch crispbread.
+- id: crisp.yeast.twice-baked
+  name: Twice-baked
+  parent: crisp.yeast
+  level: 3
+  description: Rusks, friselle and bettaw — baked, sliced, dried again.
+- id: crisp.sourdough
+  name: Sourdough
+  parent: crisp
+  level: 2
+  description: Levain-raised crispbreads.
+- id: crisp.sourdough.thin-baked
+  name: Thin-baked
+  parent: crisp.sourdough
+  level: 3
+  description: Scandinavian sour crispbreads.
+- id: crisp.chemical
+  name: Quick
+  parent: crisp
+  level: 2
+  description: Powder-raised crispbreads.
+- id: crisp.chemical.thin-baked
+  name: Thin-baked
+  parent: crisp.chemical
+  level: 3
+  description: Knäckebröd and rieska-type thin breads.
