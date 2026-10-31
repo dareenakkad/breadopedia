@@ -81,7 +81,7 @@ const mapReady = breads.length > 0; // the map renders once there are pins (step
           {articles[0].data.hero_image && <img src={`/media/${articles[0].data.slug}/${articles[0].data.hero_image}`} alt="" loading="lazy" class="rule-frame" />}
           <h3 class="t-heading"><a href={`/articles/${articles[0].data.slug}`}>{articles[0].data.title}</a></h3>
           <p class="t-body-sm">{articles[0].data.summary}</p>
-          <p class="t-caption">{fmtDate(articles[0].data.published_at)} · Dareen</p>
+          <p class="t-caption">{fmtDate(articles[0].data.published_at)} · Breadopedia</p>
         </article>
         <ol class="list">
           {articles.slice(1, 6).map((a) => (

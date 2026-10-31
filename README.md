@@ -11,7 +11,7 @@ Every bread on earth. The site behind breadopedia.org.
 | Folder | Holds |
 | --- | --- |
 | `content/breads/` | one Markdown file per bread |
-| `content/articles/` | Dareen's articles |
+| `content/articles/` | Articles |
 | `content/taxonomy.yaml` | the nested bread tree |
 | `content/countries/` | one Markdown file per country page |
 | `content/media.yaml` | image registry; every image belongs to one entry |

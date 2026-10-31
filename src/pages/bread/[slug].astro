@@ -27,7 +27,7 @@ const ytId = (u: string) => u.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/)?.[1
 const jsonLd = {
   '@context': 'https://schema.org', '@type': 'Article', headline: d.title, description: d.summary,
   datePublished: d.published_at?.toISOString(), dateModified: (d.updated_at ?? d.published_at)?.toISOString(),
-  author: { '@type': 'Person', name: 'Dareen El Akkad' }, publisher: { '@type': 'Organization', name: 'Breadopedia' },
+  author: { '@type': 'Organization', name: 'Breadopedia' }, publisher: { '@type': 'Organization', name: 'Breadopedia' },
   image: hero ? new URL(`/${hero.data.file.replace(/^public\//, '')}`, Astro.site).toString() : undefined,
 };
 ---
@@ -38,7 +38,7 @@ const jsonLd = {
     <Breadcrumb items={crumbs} />
     <p class="t-caption classline"><ClassDot taxonomy={d.taxonomy} label /> {country && <> · <a href={`/country/${country.data.code}`}>{country.data.name}</a></>}</p>
     <h1 class="t-display-lg">{d.title}{d.also_known_as[0] && <span class="aka t-lede"> {d.also_known_as[0]}</span>}</h1>
-    <p class="t-caption">{d.updated_at ? `Last reviewed ${fmtDate(d.updated_at)}` : `Published ${fmtDate(d.published_at)}`} · Dareen</p>
+    <p class="t-caption">{d.updated_at ? `Last reviewed ${fmtDate(d.updated_at)}` : `Published ${fmtDate(d.published_at)}`} · Breadopedia</p>
     {hero && (
       <figure class="hero">
         <img src={`/${hero.data.file.replace(/^public\//, '')}`} alt={hero.data.alt} class="rule-frame" />
