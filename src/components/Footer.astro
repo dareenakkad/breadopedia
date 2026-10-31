@@ -1,0 +1,28 @@
+---
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap inner">
+    <div>
+      <span class="t-heading">Breadopedia</span>
+      <p class="t-body-sm">Every bread on earth. Written by a baker, classified like a science, built on cited sources.</p>
+    </div>
+    <nav class="t-caption links" aria-label="Footer">
+      <a href="/about">About</a>
+      <a href="/breads">All breads</a>
+      <a href="/classes">Classification</a>
+      <a href="/countries">Countries</a>
+      <a href="/articles">Articles</a>
+    </nav>
+  </div>
+  <div class="wrap t-caption legal">© {year} Breadopedia · Text licensed CC BY-SA 4.0 unless noted · Photographs credited to their authors</div>
+</footer>
+<style>
+  .site-footer { margin-top: var(--space-16); border-top: var(--rule-section) solid var(--ink); padding: var(--space-8) 0 var(--space-6); }
+  .inner { display: grid; gap: var(--space-6); }
+  .inner p { max-width: 48ch; margin: var(--space-2) 0 0; }
+  .links { display: flex; flex-wrap: wrap; gap: var(--space-4) var(--space-6); align-content: start; }
+  .links a { color: var(--ink); }
+  .legal { margin-top: var(--space-8); padding-top: var(--space-4); border-top: var(--rule-row) solid var(--line); }
+  @media (min-width: 768px) { .inner { grid-template-columns: 7fr 5fr; } .links { justify-content: flex-end; } }
+</style>

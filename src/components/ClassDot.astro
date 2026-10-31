@@ -1,0 +1,8 @@
+---
+import { classInfo } from '../lib/classes';
+interface Props { taxonomy: string; large?: boolean; label?: boolean }
+const { taxonomy, large = false, label = false } = Astro.props;
+const c = classInfo(taxonomy);
+---
+<span class="cd"><i class:list={['dot', { 'dot-lg': large }]} style={`background: var(--${c.colour})`} aria-hidden="true"></i>{label && <span>{c.name}</span>}</span>
+<style>.cd { display: inline-flex; align-items: center; gap: var(--space-2); }</style>

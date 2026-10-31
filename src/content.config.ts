@@ -1,5 +1,5 @@
 // Content schemas — the build fails on any entry that breaks these rules.
-// Mirrors "Breadopedia — Phase 1 Schema (Library)".
+// Mirrors "Breadopedia — Phase 1 Schema (Library)". Countries are pages (content/countries/<code>.md).
 import { defineCollection, z } from 'astro:content';
 import { glob, file } from 'astro/loaders';
 
@@ -52,12 +52,19 @@ const taxonomy = defineCollection({
   }),
 });
 
-const regions = defineCollection({
-  loader: file('./content/regions.yaml'),
+const countries = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './content/countries' }),
   schema: z.object({
-    id: z.string().length(2),
+    code: z.string().length(2),
     name: z.string(),
+    region: z.string(),
     centroid: z.tuple([z.number(), z.number()]),
+    hero_image: z.string().optional(),
+    summary: z.string().max(300),
+    staple_grains: z.array(z.string()).default([]),
+    status,
+    published_at: z.coerce.date().optional(),
+    updated_at: z.coerce.date().optional(),
   }),
 });
 
@@ -87,4 +94,4 @@ const affiliates = defineCollection({
   }),
 });
 
-export const collections = { breads, articles, taxonomy, regions, media, affiliates };
+export const collections = { breads, articles, taxonomy, countries, media, affiliates };

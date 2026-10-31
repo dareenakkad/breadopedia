@@ -1,0 +1,141 @@
+---
+import { render, getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ClassDot from '../../components/ClassDot.astro';
+import { classInfo } from '../../lib/classes';
+import { publishedBreads, publishedCountries, mediaFor, fmtDate } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const breads = await publishedBreads();
+  return breads.map((b) => ({ params: { slug: b.data.slug }, props: { bread: b } }));
+}
+const { bread } = Astro.props;
+const d = bread.data;
+const { Content, headings } = await render(bread);
+const media = await mediaFor(d.slug);
+const hero = media.find((m) => m.data.id === d.hero_image) ?? media[0];
+const cls = classInfo(d.taxonomy);
+const taxonomy = await getCollection('taxonomy');
+const path = d.taxonomy.split('.').map((_, i, arr) => arr.slice(0, i + 1).join('.'));
+const crumbs = [{ label: 'Breads', href: '/breads' }, ...path.map((id) => ({ label: taxonomy.find((t) => t.id === id)?.data.name ?? id, href: `/classes/${id}` })), { label: d.title }];
+const country = (await publishedCountries()).find((c) => c.data.code === d.origin_country.toLowerCase());
+const siblings = (await publishedBreads()).filter((b) => b.data.taxonomy.startsWith(path.at(-2) ?? '') && b.data.slug !== d.slug).slice(0, 5);
+const h2s = headings.filter((h) => h.depth === 2);
+const videos = [...d.videos_commercial.map((u) => ({ u, kind: 'In a bakery' })), ...d.videos_home.map((u) => ({ u, kind: 'At home' }))];
+const ytId = (u: string) => u.match(/(?:v=|youtu\.be\/|embed\/)([\w-]{11})/)?.[1];
+const jsonLd = {
+  '@context': 'https://schema.org', '@type': 'Article', headline: d.title, description: d.summary,
+  datePublished: d.published_at?.toISOString(), dateModified: (d.updated_at ?? d.published_at)?.toISOString(),
+  author: { '@type': 'Person', name: 'Dareen El Akkad' }, publisher: { '@type': 'Organization', name: 'Breadopedia' },
+  image: hero ? new URL(`/${hero.data.file.replace(/^public\//, '')}`, Astro.site).toString() : undefined,
+};
+---
+<Base title={d.title} description={d.summary} type="article" image={hero ? `/${hero.data.file.replace(/^public\//, '')}` : undefined} current="/breads">
+  <script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
+
+  <header class="head">
+    <Breadcrumb items={crumbs} />
+    <p class="t-caption classline"><ClassDot taxonomy={d.taxonomy} label /> {country && <> · <a href={`/country/${country.data.code}`}>{country.data.name}</a></>}</p>
+    <h1 class="t-display-lg">{d.title}{d.also_known_as[0] && <span class="aka t-lede"> {d.also_known_as[0]}</span>}</h1>
+    <p class="t-caption">{d.updated_at ? `Last reviewed ${fmtDate(d.updated_at)}` : `Published ${fmtDate(d.published_at)}`} · Dareen</p>
+    {hero && (
+      <figure class="hero">
+        <img src={`/${hero.data.file.replace(/^public\//, '')}`} alt={hero.data.alt} class="rule-frame" />
+        <figcaption class="t-caption">{hero.data.caption} · Photo: {hero.data.author}, {hero.data.licence}</figcaption>
+      </figure>
+    )}
+    <p class="t-lede lede">{d.summary}</p>
+  </header>
+
+  <div class="cols">
+    {h2s.length > 2 && (
+      <nav class="toc no-print" aria-label="Contents">
+        <p class="t-label">Contents</p>
+        <ol class="t-body-sm">{h2s.map((h, i) => <li><a href={`#${h.slug}`}><span class="t-data num">§ {i + 1}</span> {h.text}</a></li>)}</ol>
+      </nav>
+    )}
+
+    <article class="reading t-body">
+      <Content />
+      {videos.length > 0 && (
+        <section class="videos">
+          <h2 id="videos">Watch it made</h2>
+          {videos.map((v) => ytId(v.u) && (
+            <figure>
+              <p class="t-eyebrow">{v.kind}</p>
+              <div class="video rule-frame"><iframe src={`https://www.youtube-nocookie.com/embed/${ytId(v.u)}`} title={`${d.title} — ${v.kind}`} loading="lazy" allowfullscreen></iframe></div>
+            </figure>
+          ))}
+        </section>
+      )}
+      {d.sources.length > 0 && (
+        <section>
+          <h2 id="sources">Sources</h2>
+          <ol class="t-body-sm sources">{d.sources.map((s) => <li>{s.startsWith('http') ? <a href={s}>{s}</a> : s}</li>)}</ol>
+        </section>
+      )}
+      <p class="print-footer">breadopedia.org/bread/{d.slug} · retrieved <span class="print-date"></span></p>
+    </article>
+
+    <aside class="infobox">
+      <h2 class="t-heading ib-title">{d.title}</h2>
+      {hero && <img src={`/${hero.data.file.replace(/^public\//, '')}`} alt="" class="rule-frame ib-img" loading="lazy" />}
+      <div class="ib-cls t-nav">
+        <span class="t-label">Classification</span>
+        {crumbs.slice(1, -1).map((c) => <><a href={c.href}>{c.label}</a> › </>)}<b>{d.title}</b>
+        <p class="t-caption"><ClassDot taxonomy={d.taxonomy} /> {cls.name}</p>
+      </div>
+      <dl>
+        {country && <><dt class="t-label">Origin</dt><dd class="t-body-sm"><a href={`/country/${country.data.code}`}>{country.data.name}</a></dd></>}
+        {d.also_known_as.length > 0 && <><dt class="t-label">Also known as</dt><dd class="t-body-sm">{d.also_known_as.join(', ')}</dd></>}
+        {siblings.length > 0 && <><dt class="t-label">Siblings</dt><dd class="t-body-sm">{siblings.map((s, i) => <>{i > 0 && ', '}<a href={`/bread/${s.data.slug}`}>{s.data.title}</a></>)}</dd></>}
+      </dl>
+    </aside>
+  </div>
+</Base>
+
+<style>
+  .head { padding-top: var(--space-6); display: grid; gap: var(--space-3); }
+  .classline { margin: 0; }
+  .aka { color: var(--slate); font-style: italic; font-weight: 400; letter-spacing: 0; }
+  .hero { margin: var(--space-4) 0 0; }
+  .hero img { width: 100%; aspect-ratio: 16 / 7; object-fit: cover; }
+  .lede { max-width: 66ch; margin: var(--space-4) 0 0; }
+  .infobox { order: -1; }
+  @media (min-width: 768px) { .infobox { order: 0; } }
+  .cols { display: grid; gap: var(--space-8); margin-top: var(--space-8); }
+  .toc ol { list-style: none; padding: 0; margin: var(--space-2) 0 0; }
+  .toc li { padding: 6px 0; border-top: var(--rule-row) solid var(--line); }
+  .toc a { color: var(--ink); text-decoration: none; }
+  .toc a:hover { color: var(--cobalt); text-decoration: underline; }
+  .num { color: var(--slate); margin-right: 6px; }
+  .toc .t-label { color: var(--slate); margin: 0; }
+  .video { aspect-ratio: 16 / 9; }
+  .video iframe { width: 100%; height: 100%; border: 0; }
+  .videos figure { margin: var(--space-6) 0; }
+  .videos .t-eyebrow { margin: 0 0 var(--space-2); }
+  .sources li { margin-bottom: var(--space-2); overflow-wrap: anywhere; }
+  .infobox { border-top: var(--rule-section) solid var(--ink); border-bottom: 1px solid var(--ink); padding-top: var(--space-3); align-self: start; }
+  .ib-title { font-size: 22px; margin-bottom: 10px; }
+  .ib-img { display: none; width: 100%; aspect-ratio: 1; object-fit: cover; }
+  @media (min-width: 768px) { .ib-img { display: block; } }
+  .ib-cls { padding: var(--space-3) 0 10px; border-bottom: 1px solid var(--ink); }
+  .ib-cls .t-label { display: block; color: var(--slate); }
+  .ib-cls p { margin: var(--space-1) 0 0; }
+  dl { margin: 0; display: grid; grid-template-columns: 92px 1fr; }
+  dt, dd { margin: 0; padding: 9px 0; border-top: var(--rule-row) solid var(--line); }
+  dt { color: var(--slate); padding-top: 12px; }
+  @media (min-width: 768px) {
+    .cols { grid-template-columns: 1fr 260px; }
+    .toc { display: none; }
+  }
+  @media (min-width: 1024px) {
+    .cols { grid-template-columns: 190px minmax(0, 66ch) 300px; justify-content: space-between; }
+    .toc { display: block; position: sticky; top: var(--space-6); align-self: start; }
+  }
+</style>
+<script>
+  const el = document.querySelector('.print-date');
+  if (el) el.textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+</script>

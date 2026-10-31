@@ -1,73 +1,130 @@
 ---
 import Base from '../layouts/Base.astro';
+import ClassDot from '../components/ClassDot.astro';
+import { CLASSES, classOf } from '../lib/classes';
+import { publishedBreads, publishedArticles, publishedCountries, byDateDesc, fmtDate, mediaFor } from '../lib/content';
+
+const breads = await publishedBreads();
+const articles = (await publishedArticles()).sort(byDateDesc);
+const countries = await publishedCountries();
+const recent = [...breads].sort(byDateDesc).slice(0, 8);
+const featured = recent[0];
+const featuredImg = featured ? (await mediaFor(featured.data.slug)).find((m) => m.data.id === featured.data.hero_image) : undefined;
+const counts = Object.fromEntries(CLASSES.map((c) => [c.id, breads.filter((b) => classOf(b.data.taxonomy) === c.id).length]));
+const mapReady = breads.length > 0; // the map renders once there are pins (step 7 wires MapLibre)
 ---
-<Base title="Breadopedia — Every bread on earth" description="The world's bread encyclopedia: history, science, technique and recipes for every bread on earth. Opening soon.">
-  <main>
-    <div class="band" aria-hidden="true"></div>
-    <section class="hero">
-      <p class="kicker">Opening soon</p>
-      <h1>Breadopedia</h1>
-      <p class="tagline">Every bread on earth.</p>
-      <p class="lede">
-        An encyclopedia of bread — where each loaf comes from, how it is made,
-        the science underneath it, and how to bake it at home.
-      </p>
+<Base title="Breadopedia" description="The bread encyclopedia: every bread on earth with its history, science, technique and a working recipe, written by a baker and built on cited sources." current="/">
+
+  <section class="statement">
+    <h1 class="t-display-xl">Every bread on earth.</h1>
+    <p class="t-lede">An encyclopedia of bread: where each loaf comes from, how it is made, the science underneath it, and how to bake it at home. Written by a baker, classified like a science, built on cited sources.</p>
+  </section>
+
+  {mapReady && (
+    <section class="map" aria-labelledby="map-h">
+      <h2 id="map-h" class="visually-hidden">Map of breads</h2>
+      <div id="world-map" class="rule-frame map-frame" data-src="/map.json" role="img" aria-label={`World map with ${breads.length} breads`}></div>
+      <ul class="legend t-caption" aria-label="Map legend">
+        {CLASSES.map((c) => <li><button type="button" class="legend-btn" data-class={c.id}><ClassDot taxonomy={c.id} /> {c.name}</button></li>)}
+      </ul>
     </section>
-    <footer>
-      <span>breadopedia.org</span>
-    </footer>
-  </main>
+  )}
+
+  <section class="section rule-section classes" aria-labelledby="classes-h">
+    <h2 id="classes-h" class="t-title">Classification</h2>
+    <div class="split-4-8">
+      <div class="stats">
+        <table class="t-body-sm">
+          <tbody>
+            <tr><th class="t-label">Breads</th><td class="t-data">{breads.length}</td></tr>
+            <tr><th class="t-label">Classes</th><td class="t-data">{CLASSES.length}</td></tr>
+            <tr><th class="t-label">Countries</th><td class="t-data">{countries.length}</td></tr>
+          </tbody>
+        </table>
+        <p class="t-body-sm">Every bread sits in a nested tree: class, method, type, regional variant. The tree is what makes the reference scholarly, and it is the legend of the map.</p>
+        <a class="btn t-ui" href="/classes">Browse the full tree</a>
+      </div>
+      <ol class="index">
+        {CLASSES.map((c) => (
+          <li>
+            <a href={`/classes/${c.id}`} class="index-row">
+              <ClassDot taxonomy={c.id} large />
+              <span class="t-heading index-name">{c.name}</span>
+              <span class="t-data index-n">{counts[c.id]}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {featured && (
+    <section class="section rule-section" aria-labelledby="feat-h">
+      <p class="t-eyebrow" style={`color: var(--${CLASSES.find(c => c.id === classOf(featured.data.taxonomy))?.colour ?? 'ink'})`}>Featured bread</p>
+      <h2 id="feat-h" class="t-display-lg"><a class="plain" href={`/bread/${featured.data.slug}`}>{featured.data.title}</a></h2>
+      <div class="split-7-5 feat">
+        {featuredImg && <img src={`/${featuredImg.data.file.replace(/^public\//, '')}`} alt={featuredImg.data.alt} loading="lazy" class="rule-frame" />}
+        <div>
+          <p class="t-lede">{featured.data.summary}</p>
+          <ClassDot taxonomy={featured.data.taxonomy} label />
+          <p><a class="btn t-ui" href={`/bread/${featured.data.slug}`}>Read the entry</a></p>
+        </div>
+      </div>
+    </section>
+  )}
+
+  {articles.length > 0 && (
+    <section class="section rule-section" aria-labelledby="art-h">
+      <h2 id="art-h" class="t-title">Articles</h2>
+      <div class="split-7-5">
+        <article>
+          {articles[0].data.hero_image && <img src={`/media/${articles[0].data.slug}/${articles[0].data.hero_image}`} alt="" loading="lazy" class="rule-frame" />}
+          <h3 class="t-heading"><a href={`/articles/${articles[0].data.slug}`}>{articles[0].data.title}</a></h3>
+          <p class="t-body-sm">{articles[0].data.summary}</p>
+          <p class="t-caption">{fmtDate(articles[0].data.published_at)} · Dareen</p>
+        </article>
+        <ol class="list">
+          {articles.slice(1, 6).map((a) => (
+            <li class="rule-row"><a href={`/articles/${a.data.slug}`} class="t-heading">{a.data.title}</a><span class="t-data">{fmtDate(a.data.published_at)}</span></li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  )}
+
+  {recent.length > 1 && (
+    <section class="section rule-section" aria-labelledby="rec-h">
+      <h2 id="rec-h" class="t-title">Recently added</h2>
+      <ol class="list">
+        {recent.map((b) => (
+          <li class="rule-row"><span><ClassDot taxonomy={b.data.taxonomy} /><a href={`/bread/${b.data.slug}`} class="t-heading">{b.data.title}</a></span><span class="t-data">{fmtDate(b.data.updated_at ?? b.data.published_at)}</span></li>
+        ))}
+      </ol>
+    </section>
+  )}
 </Base>
 
 <style>
-  main {
-    min-height: 100dvh;
-    display: grid;
-    grid-template-rows: 12px 1fr auto;
-  }
-  .band {
-    background: linear-gradient(90deg, var(--crust) 0 25%, var(--wheat) 25% 50%, var(--leaf) 50% 75%, var(--sky) 75% 100%);
-  }
-  .hero {
-    padding: clamp(48px, 10vw, 120px) 16px;
-    max-width: 720px;
-    margin: 0 auto;
-    text-align: center;
-  }
-  .kicker {
-    font-family: var(--font-head);
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    font-size: 0.8rem;
-    color: var(--crust);
-    margin: 0 0 16px;
-  }
-  h1 {
-    font-size: clamp(3rem, 11vw, 6.5rem);
-    line-height: 0.95;
-    margin: 0;
-    font-weight: 700;
-  }
-  .tagline {
-    font-family: var(--font-head);
-    font-size: clamp(1.25rem, 3.5vw, 2rem);
-    font-weight: 500;
-    color: var(--sky);
-    margin: 16px 0 24px;
-  }
-  .lede {
-    font-size: 1.125rem;
-    max-width: 52ch;
-    margin: 0 auto;
-    color: #3C3B4F;
-  }
-  footer {
-    padding: 24px 16px;
-    text-align: center;
-    font-family: var(--font-head);
-    font-size: 0.85rem;
-    color: #6B6A80;
-    border-top: 1px solid #ECEBF2;
-  }
+  .statement { padding: var(--space-8) 0 var(--space-6); display: grid; gap: var(--space-4); }
+  .statement .t-lede { max-width: 60ch; margin: 0; }
+  @media (min-width: 1024px) { .statement { grid-template-columns: 8fr 4fr; align-items: end; } .statement .t-lede { grid-column: 1; } }
+  .map-frame { aspect-ratio: 2 / 1; background: var(--sky-tint); min-height: 240px; }
+  .legend { list-style: none; margin: var(--space-3) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-6); }
+  .legend-btn { background: none; border: 0; padding: 0; cursor: pointer; color: var(--ink); }
+  .split-4-8, .split-7-5 { display: grid; gap: var(--space-6); }
+  @media (min-width: 768px) { .split-4-8 { grid-template-columns: 4fr 8fr; } .split-7-5 { grid-template-columns: 7fr 5fr; } }
+  .stats table { margin-bottom: var(--space-4); border-bottom: 1px solid var(--ink); }
+  .stats th { text-align: left; color: var(--slate); padding: var(--space-2) 0; border-top: var(--rule-row) solid var(--line); font-weight: 500; }
+  .stats td { text-align: right; padding: var(--space-2) 0; border-top: var(--rule-row) solid var(--line); }
+  .index { list-style: none; margin: 0; padding: 0; }
+  .index-row { display: grid; grid-template-columns: 28px 1fr auto; gap: var(--space-4); align-items: center; padding: 14px 0; border-top: 1px solid var(--ink); color: var(--ink); text-decoration: none; }
+  .index li:last-child .index-row { border-bottom: 1px solid var(--ink); }
+  .index-row:hover .index-name { color: var(--cobalt); text-decoration: underline; text-underline-offset: 3px; }
+  .plain { color: var(--ink); text-decoration: none; }
+  .plain:hover { text-decoration: underline; }
+  .feat img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  .list { list-style: none; margin: 0; padding: 0; }
+  .list li { display: flex; justify-content: space-between; gap: var(--space-4); padding: var(--space-3) 0; align-items: baseline; }
+  .list li:last-child { border-bottom: var(--rule-row) solid var(--line); }
+  .list a { color: var(--ink); }
 </style>

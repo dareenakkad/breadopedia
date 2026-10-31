@@ -13,7 +13,7 @@ Every bread on earth. The site behind breadopedia.org.
 | `content/breads/` | one Markdown file per bread |
 | `content/articles/` | Dareen's articles |
 | `content/taxonomy.yaml` | the nested bread tree |
-| `content/regions.yaml` | countries with map coordinates |
+| `content/countries/` | one Markdown file per country page |
 | `content/media.yaml` | image registry; every image belongs to one entry |
 | `content/affiliates.yaml` | recommended products |
 | `public/media/<entry>/` | image files, one folder per entry |

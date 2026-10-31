@@ -1,0 +1,44 @@
+/* Breadopedia design system v5 — generated from tokens.json; edit the design system, not this file */
+:root {
+  --paper: #ffffff;
+  --cloud: #eef2f7;
+  --ink: #14213d;
+  --slate: #52607a;
+  --line: #d9e0ea;
+  --cobalt: #2447d3;
+  --cobalt-tint: #e6ebfb;
+  --tomato: #d93a1f;
+  --tomato-tint: #fde8e4;
+  --saffron: #e3a81a;
+  --saffron-tint: #fbf0cf;
+  --rose: #c43d77;
+  --rose-tint: #f8e4ec;
+  --tangerine: #d9702a;
+  --tangerine-tint: #fae8da;
+  --plum: #6b3fa0;
+  --plum-tint: #ece3f7;
+  --jade: #0b7a5c;
+  --jade-tint: #dff5ee;
+  --sky: #1a8fcf;
+  --sky-tint: #e3f1fb;
+  --rust: #8a3a1b;
+  --rust-tint: #f2e4dd;
+  --moss: #4a6b2f;
+  --moss-tint: #e9efdf;
+  --on-color: var(--paper);
+  --font-display: "Space Grotesk Variable", "Space Grotesk", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Source Serif 4 Variable", "Source Serif 4", Georgia, serif;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --radius-none: 0;
+  --radius-dot: 999px;
+  --rule-section: 3px;
+  --rule-frame: 1.5px;
+  --rule-row: 1px;
+}

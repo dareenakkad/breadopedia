@@ -1,0 +1,81 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ClassDot from '../../components/ClassDot.astro';
+import { publishedBreads, publishedCountries, mediaFor, byTitle } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const countries = await publishedCountries();
+  return countries.map((c) => ({ params: { code: c.data.code }, props: { country: c } }));
+}
+const { country } = Astro.props;
+const d = country.data;
+const { Content } = await render(country);
+const breads = (await publishedBreads()).filter((b) => b.data.origin_country.toLowerCase() === d.code).sort(byTitle);
+const media = await mediaFor(d.code);
+const hero = media.find((m) => m.data.id === d.hero_image) ?? media[0];
+const all = await publishedCountries();
+const neighbours = all.filter((c) => c.data.region === d.region && c.data.code !== d.code).slice(0, 6);
+---
+<Base title={`Bread in ${d.name}`} description={d.summary} current="/countries">
+  <header class="head">
+    <Breadcrumb items={[{ label: 'Breads', href: '/breads' }, { label: 'Countries', href: '/countries' }, { label: d.name }]} />
+    <h1 class="t-display-lg">{d.name} <span class="t-data count">{breads.length} {breads.length === 1 ? 'bread' : 'breads'}</span></h1>
+    {hero && (
+      <figure class="hero">
+        <img src={`/${hero.data.file.replace(/^public\//, '')}`} alt={hero.data.alt} class="rule-frame" />
+        <figcaption class="t-caption">{hero.data.caption} · Photo: {hero.data.author}, {hero.data.licence}</figcaption>
+      </figure>
+    )}
+  </header>
+
+  <div class="cols">
+    <article class="reading t-body">
+      <p class="t-lede">{d.summary}</p>
+      <Content />
+    </article>
+    <aside class="facts">
+      <dl>
+        <dt class="t-label">Region</dt><dd class="t-body-sm">{d.region}</dd>
+        {d.staple_grains.length > 0 && <><dt class="t-label">Staple grains</dt><dd class="t-body-sm">{d.staple_grains.join(', ')}</dd></>}
+        <dt class="t-label">Breads</dt><dd class="t-data">{breads.length}</dd>
+        {neighbours.length > 0 && <><dt class="t-label">Nearby</dt><dd class="t-body-sm">{neighbours.map((n, i) => <>{i > 0 && ', '}<a href={`/country/${n.data.code}`}>{n.data.name}</a></>)}</dd></>}
+      </dl>
+    </aside>
+  </div>
+
+  <section class="section rule-section" aria-labelledby="az">
+    <h2 id="az" class="t-title">Breads of {d.name}, A to Z</h2>
+    {breads.length === 0 ? (
+      <p class="t-body">No entries for {d.name} yet.</p>
+    ) : (
+      <ol class="az">
+        {breads.map((b) => (
+          <li class="rule-row">
+            <ClassDot taxonomy={b.data.taxonomy} />
+            <div><a class="t-heading" href={`/bread/${b.data.slug}`}>{b.data.title}</a><p class="t-body-sm">{b.data.summary}</p></div>
+          </li>
+        ))}
+      </ol>
+    )}
+  </section>
+</Base>
+
+<style>
+  .head { padding-top: var(--space-6); display: grid; gap: var(--space-3); }
+  .count { color: var(--slate); font-size: 16px; margin-left: var(--space-3); letter-spacing: 0; }
+  .hero img { width: 100%; aspect-ratio: 16 / 7; object-fit: cover; }
+  .cols { display: grid; gap: var(--space-8); margin-top: var(--space-8); }
+  .facts { border-top: var(--rule-section) solid var(--ink); border-bottom: 1px solid var(--ink); align-self: start; }
+  dl { margin: 0; display: grid; grid-template-columns: 110px 1fr; }
+  dt, dd { margin: 0; padding: 9px 0; border-top: var(--rule-row) solid var(--line); }
+  dt { color: var(--slate); padding-top: 12px; }
+  dl > dt:first-of-type, dl > dt:first-of-type + dd { border-top: 0; }
+  .az { list-style: none; margin: 0; padding: 0; }
+  .az li { display: grid; grid-template-columns: 20px 1fr; gap: var(--space-3); padding: var(--space-3) 0; align-items: baseline; }
+  .az li:last-child { border-bottom: var(--rule-row) solid var(--line); }
+  .az a { color: var(--ink); }
+  .az p { margin: var(--space-1) 0 0; }
+  @media (min-width: 768px) { .cols { grid-template-columns: minmax(0, 66ch) 300px; justify-content: space-between; } }
+</style>

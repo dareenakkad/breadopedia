@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base title="Not found" description="There is no bread here yet.">
+  <section class="nf">
+    <h1 class="t-title">There is no bread here yet.</h1>
+    <p class="t-body">The page you asked for does not exist, or the entry has not been published. Try a search, or start from the <a href="/classes">class index</a>.</p>
+    <form action="/search" role="search" class="s rule-frame">
+      <label class="visually-hidden" for="q404">Search</label>
+      <input class="t-ui" id="q404" name="q" type="search" placeholder="Search every bread" />
+      <button class="t-ui" type="submit">Search</button>
+    </form>
+  </section>
+</Base>
+<style>
+  .nf { padding: var(--space-16) 0; max-width: 60ch; }
+  .s { display: flex; height: 40px; max-width: 420px; }
+  .s input { flex: 1; border: 0; padding: 0 var(--space-3); min-width: 0; }
+  .s button { border: 0; border-left: var(--rule-frame) solid var(--ink); background: var(--paper); padding: 0 var(--space-4); cursor: pointer; }
+  .s button:hover { background: var(--ink); color: var(--paper); }
+</style>
