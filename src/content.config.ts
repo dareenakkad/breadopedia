@@ -1,10 +1,23 @@
 // Content schemas — the build fails on any entry that breaks these rules.
-// Mirrors "Breadopedia — Phase 1 Schema (Library)". Countries are pages (content/countries/<code>.md).
+// Mirrors "Breadopedia — Phase 1 Schema (Library)". Countries are pages (content/countries/<code>.md). Images sit inside each entry (no separate registry).
 import { defineCollection, z } from 'astro:content';
 import { glob, file } from 'astro/loaders';
+import { parse as parseYaml } from 'yaml';
 
 const status = z.enum(['draft', 'review', 'published']);
 const url = z.string().url();
+
+// Every image belongs to exactly one entry and carries its credit; the build refuses an entry whose images lack any of these.
+// `file` is the site path the CMS writes, e.g. /media/baguette/crumb.jpg. The first image is the entry's hero.
+const image = z.object({
+  file: z.string(),
+  caption: z.string(),
+  licence: z.enum(['CC0', 'CC-BY', 'CC-BY-SA', 'own']),
+  author: z.string(),
+  source_url: url,
+  alt: z.string(),
+});
+const images = z.array(image).default([]);
 
 const breads = defineCollection({
   loader: glob({ pattern: '**/*.md', base: './content/breads' }),
@@ -16,7 +29,7 @@ const breads = defineCollection({
     origin_point: z.tuple([z.number(), z.number()]),
     also_known_as: z.array(z.string()).default([]),
     status,
-    hero_image: z.string(),
+    images,
     summary: z.string().max(300),
     videos_commercial: z.array(url).default([]),
     videos_home: z.array(url).default([]),
@@ -33,7 +46,7 @@ const articles = defineCollection({
     title: z.string(),
     slug: z.string(),
     status,
-    hero_image: z.string().optional(),
+    images,
     summary: z.string().max(300),
     published_at: z.coerce.date().optional(),
     updated_at: z.coerce.date().optional(),
@@ -59,7 +72,7 @@ const countries = defineCollection({
     name: z.string(),
     region: z.string(),
     centroid: z.tuple([z.number(), z.number()]),
-    hero_image: z.string().optional(),
+    images,
     summary: z.string().max(300),
     staple_grains: z.array(z.string()).default([]),
     status,
@@ -68,22 +81,8 @@ const countries = defineCollection({
   }),
 });
 
-const media = defineCollection({
-  loader: file('./content/media.yaml'),
-  schema: z.object({
-    id: z.string(),
-    entry: z.string(),
-    file: z.string(),
-    caption: z.string(),
-    licence: z.enum(['CC0', 'CC-BY', 'CC-BY-SA', 'own']),
-    author: z.string(),
-    source_url: url,
-    alt: z.string(),
-  }),
-});
-
 const affiliates = defineCollection({
-  loader: file('./content/affiliates.yaml'),
+  loader: file('./content/affiliates.yaml', { parser: (text) => parseYaml(text).items ?? [] }),
   schema: z.object({
     id: z.string(),
     name: z.string(),
@@ -94,4 +93,4 @@ const affiliates = defineCollection({
   }),
 });
 
-export const collections = { breads, articles, taxonomy, countries, media, affiliates };
+export const collections = { breads, articles, taxonomy, countries, affiliates };

@@ -4,7 +4,7 @@ import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import ClassDot from '../../components/ClassDot.astro';
 import { classInfo } from '../../lib/classes';
-import { publishedBreads, publishedCountries, mediaFor, fmtDate } from '../../lib/content';
+import { publishedBreads, publishedCountries, heroOf, imgSrc, fmtDate } from '../../lib/content';
 
 export async function getStaticPaths() {
   const breads = await publishedBreads();
@@ -13,8 +13,7 @@ export async function getStaticPaths() {
 const { bread } = Astro.props;
 const d = bread.data;
 const { Content, headings } = await render(bread);
-const media = await mediaFor(d.slug);
-const hero = media.find((m) => m.data.id === d.hero_image) ?? media[0];
+const hero = heroOf(bread);
 const cls = classInfo(d.taxonomy);
 const taxonomy = await getCollection('taxonomy');
 const path = d.taxonomy.split('.').map((_, i, arr) => arr.slice(0, i + 1).join('.'));
@@ -28,10 +27,10 @@ const jsonLd = {
   '@context': 'https://schema.org', '@type': 'Article', headline: d.title, description: d.summary,
   datePublished: d.published_at?.toISOString(), dateModified: (d.updated_at ?? d.published_at)?.toISOString(),
   author: { '@type': 'Organization', name: 'Breadopedia' }, publisher: { '@type': 'Organization', name: 'Breadopedia' },
-  image: hero ? new URL(`/${hero.data.file.replace(/^public\//, '')}`, Astro.site).toString() : undefined,
+  image: hero ? new URL(imgSrc(hero.file), Astro.site).toString() : undefined,
 };
 ---
-<Base title={d.title} description={d.summary} type="article" image={hero ? `/${hero.data.file.replace(/^public\//, '')}` : undefined} current="/breads">
+<Base title={d.title} description={d.summary} type="article" image={hero ? imgSrc(hero.file) : undefined} current="/breads">
   <script type="application/ld+json" slot="head" set:html={JSON.stringify(jsonLd)} />
 
   <header class="head">
@@ -41,8 +40,8 @@ const jsonLd = {
     <p class="t-caption">{d.updated_at ? `Last reviewed ${fmtDate(d.updated_at)}` : `Published ${fmtDate(d.published_at)}`} · Breadopedia</p>
     {hero && (
       <figure class="hero">
-        <img src={`/${hero.data.file.replace(/^public\//, '')}`} alt={hero.data.alt} class="rule-frame" />
-        <figcaption class="t-caption">{hero.data.caption} · Photo: {hero.data.author}, {hero.data.licence}</figcaption>
+        <img src={imgSrc(hero.file)} alt={hero.alt} class="rule-frame" />
+        <figcaption class="t-caption">{hero.caption} · Photo: {hero.author}, {hero.licence}</figcaption>
       </figure>
     )}
     <p class="t-lede lede">{d.summary}</p>
@@ -80,7 +79,7 @@ const jsonLd = {
 
     <aside class="infobox">
       <h2 class="t-heading ib-title">{d.title}</h2>
-      {hero && <img src={`/${hero.data.file.replace(/^public\//, '')}`} alt="" class="rule-frame ib-img" loading="lazy" />}
+      {hero && <img src={imgSrc(hero.file)} alt="" class="rule-frame ib-img" loading="lazy" />}
       <div class="ib-cls t-nav">
         <span class="t-label">Classification</span>
         {crumbs.slice(1, -1).map((c) => <><a href={c.href}>{c.label}</a> › </>)}<b>{d.title}</b>

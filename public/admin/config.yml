@@ -1,0 +1,550 @@
+# Decap CMS — the editor at breadopedia.org/admin. Forms mirror src/content.config.ts.
+backend:
+  name: github
+  repo: dareenakkad/breadopedia
+  branch: main
+  base_url: https://breadopedia-auth.dareen.workers.dev
+  auth_endpoint: auth
+  commit_messages:
+    create: 'Add {{collection}}: {{slug}}'
+    update: 'Update {{collection}}: {{slug}}'
+    delete: 'Remove {{collection}}: {{slug}}'
+    uploadMedia: Add image {{path}}
+    deleteMedia: Remove image {{path}}
+site_url: https://breadopedia.org
+display_url: https://breadopedia.org
+logo_url: /favicon.svg
+media_folder: public/media
+public_folder: /media
+slug:
+  encoding: ascii
+  clean_accents: true
+  sanitize_replacement: '-'
+collections:
+- name: breads
+  label: Breads
+  label_singular: Bread
+  folder: content/breads
+  create: true
+  slug: '{{fields.slug}}'
+  media_folder: /public/media/{{slug}}
+  public_folder: /media/{{slug}}
+  sortable_fields:
+  - title
+  - status
+  - origin_country
+  summary: '{{title}} — {{status}}'
+  fields:
+  - label: Title
+    name: title
+    widget: string
+  - label: Slug (web address, lowercase, hyphens)
+    name: slug
+    widget: string
+    pattern:
+    - ^[a-z0-9-]+$
+    - Lowercase letters, numbers and hyphens only
+  - label: Classification
+    name: taxonomy
+    widget: select
+    options:
+    - label: Flatbreads › Unleavened › Griddle
+      value: flatbreads.unleavened.griddle
+    - label: Flatbreads › Unleavened › Oven-floor
+      value: flatbreads.unleavened.oven-floor
+    - label: Flatbreads › Unleavened › Pit and ash
+      value: flatbreads.unleavened.pit
+    - label: Flatbreads › Leavened › Oven-floor
+      value: flatbreads.leavened.oven-floor
+    - label: Flatbreads › Leavened › Tandoor
+      value: flatbreads.leavened.tandoor
+    - label: Flatbreads › Leavened › Griddle
+      value: flatbreads.leavened.griddle
+    - label: Flatbreads › Leavened › Pit
+      value: flatbreads.leavened.pit
+    - label: Flatbreads › Pizza › Neapolitan and Italian
+      value: flatbreads.pizza.neapolitan
+    - label: Flatbreads › Pizza › American styles
+      value: flatbreads.pizza.american
+    - label: Flatbreads › Pizza › Folded and filled
+      value: flatbreads.pizza.filled
+    - label: Hearth and pan loaves › Yeast › Hearth-baked
+      value: hearth.yeast.oven-floor
+    - label: Hearth and pan loaves › Yeast › Pan
+      value: hearth.yeast.pan
+    - label: Hearth and pan loaves › Sourdough › Hearth-baked
+      value: hearth.sourdough.oven-floor
+    - label: Hearth and pan loaves › Sourdough › Pan
+      value: hearth.sourdough.pan
+    - label: Hearth and pan loaves › Levain and yeast › Hearth-baked
+      value: hearth.hybrid.oven-floor
+    - label: Hearth and pan loaves › Quick breads › Hearth-baked
+      value: hearth.chemical.oven-floor
+    - label: Hearth and pan loaves › Quick breads › Pan
+      value: hearth.chemical.pan
+    - label: Hearth and pan loaves › Quick breads › Griddle
+      value: hearth.chemical.griddle
+    - label: Enriched and sweet breads › Yeast › Soft enriched
+      value: enriched.yeast.soft
+    - label: Enriched and sweet breads › Yeast › Fruited and festive
+      value: enriched.yeast.fruited
+    - label: Enriched and sweet breads › Yeast › Laminated
+      value: enriched.yeast.laminated
+    - label: Enriched and sweet breads › Sourdough › Fruited and festive
+      value: enriched.sourdough.fruited
+    - label: Enriched and sweet breads › Quick › Soft
+      value: enriched.chemical.soft
+    - label: Rolls and buns › Yeast › Rolls
+      value: rolls.yeast.oven-floor
+    - label: Rolls and buns › Yeast › Rings
+      value: rolls.yeast.ring
+    - label: Rolls and buns › Yeast › Griddled
+      value: rolls.yeast.griddle
+    - label: Rolls and buns › Levain and yeast › Rings
+      value: rolls.hybrid.ring
+    - label: Rye and dark breads › Sourdough › Pan
+      value: rye.sourdough.pan
+    - label: Rye and dark breads › Sourdough › Hearth-baked
+      value: rye.sourdough.oven-floor
+    - label: Rye and dark breads › Yeast › Hearth-baked
+      value: rye.yeast.oven-floor
+    - label: Rye and dark breads › Yeast › Pan
+      value: rye.yeast.pan
+    - label: Steamed and fried breads › Yeast › Steamed
+      value: steamed.yeast.steamed
+    - label: Steamed and fried breads › Yeast › Fried
+      value: steamed.yeast.fried
+    - label: Steamed and fried breads › Unleavened › Fried
+      value: steamed.unleavened.fried
+    - label: Steamed and fried breads › Quick › Fried
+      value: steamed.chemical.fried
+    - label: Crispbreads and crackers › Unleavened › Thin-baked
+      value: crisp.unleavened.thin-baked
+    - label: Crispbreads and crackers › Yeast › Thin-baked
+      value: crisp.yeast.thin-baked
+    - label: Crispbreads and crackers › Yeast › Twice-baked
+      value: crisp.yeast.twice-baked
+    - label: Crispbreads and crackers › Sourdough › Thin-baked
+      value: crisp.sourdough.thin-baked
+    - label: Crispbreads and crackers › Quick › Thin-baked
+      value: crisp.chemical.thin-baked
+  - label: Origin country
+    name: origin_country
+    widget: select
+    options:
+    - label: Afghanistan
+      value: af
+    - label: Algeria
+      value: dz
+    - label: Argentina
+      value: ar
+    - label: Armenia
+      value: am
+    - label: Australia
+      value: au
+    - label: Austria
+      value: at
+    - label: Bangladesh
+      value: bd
+    - label: Barbados
+      value: bb
+    - label: Belarus
+      value: by
+    - label: Belgium
+      value: be
+    - label: Brazil
+      value: br
+    - label: Bulgaria
+      value: bg
+    - label: Canada
+      value: ca
+    - label: Chile
+      value: cl
+    - label: China
+      value: cn
+    - label: Colombia
+      value: co
+    - label: Cook Islands
+      value: ck
+    - label: Croatia
+      value: hr
+    - label: Cuba
+      value: cu
+    - label: Cyprus
+      value: cy
+    - label: Czechia
+      value: cz
+    - label: Denmark
+      value: dk
+    - label: Dominican Republic
+      value: do
+    - label: Egypt
+      value: eg
+    - label: Estonia
+      value: ee
+    - label: Ethiopia
+      value: et
+    - label: Fiji
+      value: fj
+    - label: Finland
+      value: fi
+    - label: France
+      value: fr
+    - label: French Polynesia
+      value: pf
+    - label: Georgia
+      value: ge
+    - label: Germany
+      value: de
+    - label: Greece
+      value: gr
+    - label: Guam
+      value: gu
+    - label: Hong Kong
+      value: hk
+    - label: Hungary
+      value: hu
+    - label: Iceland
+      value: is
+    - label: India
+      value: in
+    - label: Indonesia
+      value: id
+    - label: Iran
+      value: ir
+    - label: Iraq
+      value: iq
+    - label: Ireland
+      value: ie
+    - label: Israel
+      value: il
+    - label: Italy
+      value: it
+    - label: Jamaica
+      value: jm
+    - label: Japan
+      value: jp
+    - label: Jordan
+      value: jo
+    - label: Kiribati
+      value: ki
+    - label: Latvia
+      value: lv
+    - label: Lebanon
+      value: lb
+    - label: Libya
+      value: ly
+    - label: Lithuania
+      value: lt
+    - label: Malaysia
+      value: my
+    - label: Marshall Islands
+      value: mh
+    - label: Mexico
+      value: mx
+    - label: Micronesia
+      value: fm
+    - label: Morocco
+      value: ma
+    - label: Nepal
+      value: np
+    - label: Netherlands
+      value: nl
+    - label: New Caledonia
+      value: nc
+    - label: New Zealand
+      value: nz
+    - label: North Korea
+      value: kp
+    - label: Norway
+      value: false
+    - label: Pakistan
+      value: pk
+    - label: Palau
+      value: pw
+    - label: Palestine
+      value: ps
+    - label: Papua New Guinea
+      value: pg
+    - label: Peru
+      value: pe
+    - label: Philippines
+      value: ph
+    - label: Poland
+      value: pl
+    - label: Portugal
+      value: pt
+    - label: Puerto Rico
+      value: pr
+    - label: Romania
+      value: ro
+    - label: Russia
+      value: ru
+    - label: Samoa
+      value: ws
+    - label: Saudi Arabia
+      value: sa
+    - label: Serbia
+      value: rs
+    - label: Slovakia
+      value: sk
+    - label: Solomon Islands
+      value: sb
+    - label: South Korea
+      value: kr
+    - label: Spain
+      value: es
+    - label: Sri Lanka
+      value: lk
+    - label: Sweden
+      value: se
+    - label: Switzerland
+      value: ch
+    - label: Syria
+      value: sy
+    - label: Thailand
+      value: th
+    - label: Tonga
+      value: to
+    - label: Trinidad and Tobago
+      value: tt
+    - label: Tunisia
+      value: tn
+    - label: Turkey
+      value: tr
+    - label: Ukraine
+      value: ua
+    - label: United Kingdom
+      value: gb
+    - label: United States
+      value: us
+    - label: Vanuatu
+      value: vu
+    - label: Venezuela
+      value: ve
+    - label: Vietnam
+      value: vn
+    - label: Yemen
+      value: ye
+  - label: Origin point (latitude, then longitude)
+    name: origin_point
+    widget: list
+    field:
+      label: Coordinate
+      name: coord
+      widget: number
+      value_type: float
+    min: 2
+    max: 2
+    hint: 'Two numbers: latitude first, longitude second. This places the pin on the map.'
+  - label: Also known as
+    name: also_known_as
+    widget: list
+    required: false
+    hint: Other names, comma-separated. These are searchable.
+  - &id001
+    label: Status
+    name: status
+    widget: select
+    options:
+    - draft
+    - review
+    - published
+    default: draft
+    hint: Only "published" appears on the site.
+  - &id002
+    label: Images
+    name: images
+    widget: list
+    label_singular: Image
+    summary: '{{fields.caption}}'
+    required: false
+    hint: The first image is the main picture shown at the top of the page. Every image needs its credit.
+    fields:
+    - label: File
+      name: file
+      widget: image
+      allow_multiple: false
+    - label: Caption
+      name: caption
+      widget: string
+    - label: Licence
+      name: licence
+      widget: select
+      options:
+      - CC0
+      - CC-BY
+      - CC-BY-SA
+      - own
+      default: CC-BY-SA
+    - label: Photographer / author
+      name: author
+      widget: string
+    - label: Source link
+      name: source_url
+      widget: string
+      pattern:
+      - ^https?://
+      - Must be a web address starting with http
+    - label: Alt text (what the picture shows, for screen readers)
+      name: alt
+      widget: string
+  - &id003
+    label: Summary
+    name: summary
+    widget: text
+    hint: One or two sentences, 300 characters max. Shown in lists and on the map.
+    pattern:
+    - ^[\s\S]{1,300}$
+    - 300 characters max
+  - label: Commercial-bakery video links
+    name: videos_commercial
+    widget: list
+    required: false
+    hint: YouTube links, comma-separated
+  - label: Home-baking video links
+    name: videos_home
+    widget: list
+    required: false
+    hint: YouTube links, comma-separated
+  - label: Affiliate product ids
+    name: affiliates
+    widget: list
+    required: false
+    hint: Ids from the Affiliates list
+  - &id004
+    label: Published on
+    name: published_at
+    widget: datetime
+    required: false
+    date_format: YYYY-MM-DD
+    time_format: false
+    format: YYYY-MM-DD
+  - &id005
+    label: Updated on
+    name: updated_at
+    widget: datetime
+    required: false
+    date_format: YYYY-MM-DD
+    time_format: false
+    format: YYYY-MM-DD
+  - label: Sources (internal, never shown on the site)
+    name: sources
+    widget: list
+    required: false
+  - &id006
+    label: Body
+    name: body
+    widget: markdown
+- name: articles
+  label: Articles
+  label_singular: Article
+  folder: content/articles
+  create: true
+  slug: '{{fields.slug}}'
+  media_folder: /public/media/{{slug}}
+  public_folder: /media/{{slug}}
+  summary: '{{title}} — {{status}}'
+  fields:
+  - label: Title
+    name: title
+    widget: string
+  - label: Slug (web address, lowercase, hyphens)
+    name: slug
+    widget: string
+    pattern:
+    - ^[a-z0-9-]+$
+    - Lowercase letters, numbers and hyphens only
+  - *id001
+  - *id002
+  - *id003
+  - *id004
+  - *id005
+  - *id006
+- name: countries
+  label: Countries
+  label_singular: Country
+  folder: content/countries
+  create: true
+  slug: '{{fields.code}}'
+  media_folder: /public/media/{{code}}
+  public_folder: /media/{{code}}
+  sortable_fields:
+  - name
+  - status
+  - region
+  summary: '{{name}} — {{status}}'
+  fields:
+  - label: Country code (2 letters, lowercase)
+    name: code
+    widget: string
+    pattern:
+    - ^[a-z]{2}$
+    - Two lowercase letters
+  - label: Name
+    name: name
+    widget: string
+  - label: Region
+    name: region
+    widget: string
+  - label: Centroid (latitude, then longitude)
+    name: centroid
+    widget: list
+    field:
+      label: Coordinate
+      name: coord
+      widget: number
+      value_type: float
+    min: 2
+    max: 2
+  - *id002
+  - *id003
+  - label: Staple grains
+    name: staple_grains
+    widget: list
+    required: false
+  - *id001
+  - *id004
+  - *id005
+  - *id006
+- name: affiliates
+  label: Affiliates
+  files:
+  - name: affiliates
+    label: Recommended products
+    file: content/affiliates.yaml
+    fields:
+    - label: Products
+      name: items
+      widget: list
+      label_singular: Product
+      summary: '{{fields.name}}'
+      required: false
+      fields:
+      - label: Id (short, lowercase)
+        name: id
+        widget: string
+        pattern:
+        - ^[a-z0-9-]+$
+        - Lowercase letters, numbers and hyphens only
+      - label: Name
+        name: name
+        widget: string
+      - label: Category
+        name: category
+        widget: select
+        options:
+        - tools
+        - flours
+        - books
+        - ovens
+      - label: Link
+        name: url
+        widget: string
+      - label: Programme
+        name: programme
+        widget: string
+        hint: e.g. Amazon Associates
+      - label: Note
+        name: note
+        widget: text

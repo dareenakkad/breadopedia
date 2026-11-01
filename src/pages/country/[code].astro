@@ -3,7 +3,7 @@ import { render } from 'astro:content';
 import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import ClassDot from '../../components/ClassDot.astro';
-import { publishedBreads, publishedCountries, mediaFor, byTitle } from '../../lib/content';
+import { publishedBreads, publishedCountries, heroOf, imgSrc, byTitle } from '../../lib/content';
 
 export async function getStaticPaths() {
   const countries = await publishedCountries();
@@ -13,8 +13,7 @@ const { country } = Astro.props;
 const d = country.data;
 const { Content } = await render(country);
 const breads = (await publishedBreads()).filter((b) => b.data.origin_country.toLowerCase() === d.code).sort(byTitle);
-const media = await mediaFor(d.code);
-const hero = media.find((m) => m.data.id === d.hero_image) ?? media[0];
+const hero = heroOf(country);
 const all = await publishedCountries();
 const neighbours = all.filter((c) => c.data.region === d.region && c.data.code !== d.code).slice(0, 6);
 ---
@@ -24,8 +23,8 @@ const neighbours = all.filter((c) => c.data.region === d.region && c.data.code !
     <h1 class="t-display-lg">{d.name} <span class="t-data count">{breads.length} {breads.length === 1 ? 'bread' : 'breads'}</span></h1>
     {hero && (
       <figure class="hero">
-        <img src={`/${hero.data.file.replace(/^public\//, '')}`} alt={hero.data.alt} class="rule-frame" />
-        <figcaption class="t-caption">{hero.data.caption} · Photo: {hero.data.author}, {hero.data.licence}</figcaption>
+        <img src={imgSrc(hero.file)} alt={hero.alt} class="rule-frame" />
+        <figcaption class="t-caption">{hero.caption} · Photo: {hero.author}, {hero.licence}</figcaption>
       </figure>
     )}
   </header>

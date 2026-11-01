@@ -18,8 +18,10 @@ export const byDateDesc = <T extends { data: { published_at?: Date; updated_at?:
 export const fmtDate = (d?: Date) =>
   d ? d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : '';
 
-/** Media records for one entry, in file order. */
-export async function mediaFor(entrySlug: string) {
-  const all = await getCollection('media');
-  return all.filter((m) => m.data.entry === entrySlug);
-}
+export type Image = { file: string; caption: string; licence: string; author: string; source_url: string; alt: string };
+
+/** Site path for an image file as stored by the CMS (already /media/...), tolerant of an old public/ prefix. */
+export const imgSrc = (file: string) => '/' + file.replace(/^\/?(public\/)?/, '');
+
+/** The entry's hero: its first image. */
+export const heroOf = (e: { data: { images: Image[] } }) => e.data.images[0];

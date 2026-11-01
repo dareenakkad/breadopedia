@@ -2,14 +2,14 @@
 import Base from '../layouts/Base.astro';
 import ClassDot from '../components/ClassDot.astro';
 import { CLASSES, classOf } from '../lib/classes';
-import { publishedBreads, publishedArticles, publishedCountries, byDateDesc, fmtDate, mediaFor } from '../lib/content';
+import { publishedBreads, publishedArticles, publishedCountries, byDateDesc, fmtDate, heroOf, imgSrc } from '../lib/content';
 
 const breads = await publishedBreads();
 const articles = (await publishedArticles()).sort(byDateDesc);
 const countries = await publishedCountries();
 const recent = [...breads].sort(byDateDesc).slice(0, 8);
 const featured = recent[0];
-const featuredImg = featured ? (await mediaFor(featured.data.slug)).find((m) => m.data.id === featured.data.hero_image) : undefined;
+const featuredImg = featured ? heroOf(featured) : undefined;
 const counts = Object.fromEntries(CLASSES.map((c) => [c.id, breads.filter((b) => classOf(b.data.taxonomy) === c.id).length]));
 const mapReady = breads.length > 0; // the map renders once there are pins (step 7 wires MapLibre)
 ---
@@ -63,7 +63,7 @@ const mapReady = breads.length > 0; // the map renders once there are pins (step
       <p class="t-eyebrow" style={`color: var(--${CLASSES.find(c => c.id === classOf(featured.data.taxonomy))?.colour ?? 'ink'})`}>Featured bread</p>
       <h2 id="feat-h" class="t-display-lg"><a class="plain" href={`/bread/${featured.data.slug}`}>{featured.data.title}</a></h2>
       <div class="split-7-5 feat">
-        {featuredImg && <img src={`/${featuredImg.data.file.replace(/^public\//, '')}`} alt={featuredImg.data.alt} loading="lazy" class="rule-frame" />}
+        {featuredImg && <img src={imgSrc(featuredImg.file)} alt={featuredImg.alt} loading="lazy" class="rule-frame" />}
         <div>
           <p class="t-lede">{featured.data.summary}</p>
           <ClassDot taxonomy={featured.data.taxonomy} label />
@@ -78,7 +78,7 @@ const mapReady = breads.length > 0; // the map renders once there are pins (step
       <h2 id="art-h" class="t-title">Articles</h2>
       <div class="split-7-5">
         <article>
-          {articles[0].data.hero_image && <img src={`/media/${articles[0].data.slug}/${articles[0].data.hero_image}`} alt="" loading="lazy" class="rule-frame" />}
+          {heroOf(articles[0]) && <img src={imgSrc(heroOf(articles[0]).file)} alt="" loading="lazy" class="rule-frame" />}
           <h3 class="t-heading"><a href={`/articles/${articles[0].data.slug}`}>{articles[0].data.title}</a></h3>
           <p class="t-body-sm">{articles[0].data.summary}</p>
           <p class="t-caption">{fmtDate(articles[0].data.published_at)} · Breadopedia</p>
