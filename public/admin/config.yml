@@ -257,7 +257,7 @@ collections:
     - label: North Korea
       value: kp
     - label: Norway
-      value: false
+      value: 'no'
     - label: Pakistan
       value: pk
     - label: Palau
