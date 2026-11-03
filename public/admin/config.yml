@@ -3,7 +3,7 @@ backend:
   name: github
   repo: dareenakkad/breadopedia
   branch: main
-  base_url: https://breadopedia-auth.dareen.workers.dev
+  base_url: https://auth.breadopedia.org
   auth_endpoint: auth
   commit_messages:
     create: 'Add {{collection}}: {{slug}}'
